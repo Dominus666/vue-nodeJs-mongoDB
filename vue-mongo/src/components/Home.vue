@@ -1,0 +1,43 @@
+<template>
+  <div>
+    <v-layout row wrap>
+      <v-flex xs12 sm6 md4 lg3 padding-custom v-for="(post, i) in posts" :key="i">
+        <v-card class="card-custom">
+          <v-card-title primary-title>
+            <div>
+              <h3 class="headline mb-0">{{ post.title }}</h3>
+              <div>{{ post.description.substring(0,60) }}...</div>
+            </div>
+          </v-card-title>
+
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn flat :to="'/post/' + post._id">Read more</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-flex>
+    </v-layout>
+  </div>
+</template>
+
+<script>
+  export default {
+    computed: {
+      posts () {
+        return this.$store.getters.posts
+      }
+    }
+  }
+</script>
+
+<style lang="scss">
+.padding-custom {
+  padding: 10px;
+}
+  .card-custom {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+</style>
