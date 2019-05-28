@@ -14,16 +14,16 @@ export default {
 			state.posts.unshift(payload)
 		},
 		DELETE_POST (state, payload) {
-      const newPosts = state.posts.filter(el => el._id != payload);
-      state.posts = (newPosts)
-    },
+			const newPosts = state.posts.filter(el => el._id != payload);
+			state.posts = (newPosts)
+		},
     UPDATE_POST (state, payload) {
-      const post = state.posts.find(el => {
-        return el._id === payload.id
-      })
-      post.title = payload.title
-      post.description = payload.description
-    }
+			const post = state.posts.find(el => {
+				return el._id === payload.id
+			})
+			post.title = payload.title
+			post.description = payload.description
+		}
 	},
 	actions: {
 		async fetchPost ({commit}) {
@@ -38,14 +38,17 @@ export default {
 				author: payload.author
 			}
 			const createPost = await PostsService.addNewPost(newPost)
-			commit('CREATE_POST', createPost.data);
+			commit('CREATE_USER_POST', createPost.data)
+			commit('CREATE_POST', createPost.data)
 		},
 		async deletePost ({commit}, payload) {
 			await PostsService.deletePost(payload)
+			commit('DELETE_USER_POST', payload)
       commit('DELETE_POST', payload)
 		},
 		async updatePost ({commit}, payload) {
 			await PostsService.updatePost(payload)
+			commit('UPDATE_USER_POST', payload)
 			commit('UPDATE_POST', payload)
 		}
 	},

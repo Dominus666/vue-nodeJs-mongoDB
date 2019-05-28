@@ -12,10 +12,7 @@ router.post('/users', (req, res) => {
     if (err) {
       console.log(err)
     } else {
-      res.send({
-        success: true,
-        message: `Post with ID_${data._id} saved successfully!`
-      })
+      res.send(data)
     }
   })
 })

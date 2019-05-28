@@ -39,7 +39,8 @@
             <v-spacer></v-spacer>
             <v-btn
               @click="onSubmit"
-              :disabled="!valid"
+              :disabled="!valid || loading"
+              :loading="loading"
             >Create Account</v-btn>
           </v-card-actions>
         </v-card>
@@ -83,7 +84,11 @@ export default {
           this.$router.push('/')
         }).catch(() => {})
       }
-      
+    }
+  },
+  computed: {
+    loading () {
+      return this.$store.getters.loading
     }
   }
 }

@@ -7,25 +7,49 @@ export default {
 	},
 	mutations: {
 		REGISTRATION_USER(state, payload) {
-
+			state.user = payload
 		},
 		LOGIN_USER(state, payload) {
+			state.user = payload
+		},
+		USER_LOG_OUT(state, payload) {
+			state.userPosts = []
 			state.user = payload
 		},
 		USER_POSTS(state, payload) {
 			payload.forEach(el => {
 				state.userPosts.unshift(el)
 			});
+		},
+		CREATE_USER_POST (state, payload) {
+			state.userPosts.unshift(payload)
+		},
+		DELETE_USER_POST (state, payload){
+			const newPosts = state.userPosts.filter(el => el._id != payload);
+			state.userPosts = (newPosts)
+		},
+		UPDATE_USER_POST (state, payload) {
+			const userPost = state.userPosts.find(el => {
+				return el._id === payload.id
+			})
+			userPost.title = payload.title
+			userPost.description = payload.description
 		}
 	},
 	actions: {
-		async registrationUser({commit}, payload) {
+		async registrationUser({commit}, payload){
+			commit('setLoading', false)
 			const newUser = {
 				email: payload.email,
 				password: payload.password,
 			}
-			await UserService.addNewUser(newUser)
-			commit('REGISTRATION_USER', newUser);	
+			const createUser = await UserService.addNewUser(newUser)
+			const createdUser = {
+				_id: createUser.data._id,
+				email: createUser.data.email
+			}
+			commit('REGISTRATION_USER', createdUser);
+			commit('setLoading', true)
 		},
 		async loginUser({commit}, payload) {
 			commit('setLoading', true)
@@ -36,7 +60,10 @@ export default {
 			}
 			commit('LOGIN_USER', user)
 			commit('USER_POSTS', loginUser.data.userPosts)
-			commit('setLoading', true)
+			commit('setLoading', false)
+		},
+		logOut({commit}, payload) {
+			commit('USER_LOG_OUT', payload)
 		}
 	},
 	getters: {

@@ -18,6 +18,15 @@
                 <v-list-tile-title v-text="link.title"></v-list-tile-title>
               </v-list-tile-content>
             </v-list-tile>
+            <v-list-tile v-if="this.user != null" @click="logOut">
+              <v-list-tile-action>
+                <v-icon>exit_to_app</v-icon>
+              </v-list-tile-action>
+
+              <v-list-tile-content>
+                <v-list-tile-title v-text="'Log-Out'"></v-list-tile-title>
+              </v-list-tile-content>
+            </v-list-tile>
           </v-list>
     </v-navigation-drawer>
     <v-toolbar>
@@ -48,15 +57,23 @@
           return [
             {title: 'Home', icon: 'home', url: '/'},
             {title: 'Create Post', icon: 'add', url: '/create-post'},
-            {title: 'User Post', icon: 'list', url: '/user-post'}
+            {title: 'User Post', icon: 'list', url: '/user-post'},
           ]  
         } else {
           return [
+            {title: 'Home', icon: 'home', url: '/'},
             {title: 'Registration', icon: 'face', url: '/registration'},
             {title: 'Login', icon: 'account_box', url: '/login'}
           ]
         }
         
+      }
+    },
+    methods: {
+      logOut() {
+        this.$store.dispatch('logOut', null).then(() => {
+          this.$router.push('/')
+        }).catch(() => {})
       }
     }
   }
