@@ -27,29 +27,71 @@ export default {
 	},
 	actions: {
 		async fetchPost ({commit}) {
-			const response = await PostsService.fetchPosts()
-			const allPosts = response.data.posts
-			commit('FETCH_POST', allPosts)
+			commit('CLEAR_ERROR')
+			commit('SET_LOADING', true)
+
+			try {
+				const response = await PostsService.fetchPosts()
+				const allPosts = response.data.posts
+				commit('FETCH_POST', allPosts)
+				commit('SET_LOADING', false)
+			} catch (err) {
+				commit('SET_ERROR', err)
+				commit('SET_LOADING', false)
+				throw err
+			}
+			
 		},
 		async createPost ({commit}, payload) {
-			const newPost = {
-				title: payload.title,
-				description: payload.description,
-				author: payload.author
+			commit('CLEAR_ERROR')
+			commit('SET_LOADING', true)
+			try {
+				const newPost = {
+					title: payload.title,
+					description: payload.description,
+					author: payload.author
+				}
+				const createPost = await PostsService.addNewPost(newPost)
+				commit('CREATE_USER_POST', createPost.data)
+				commit('CREATE_POST', createPost.data)
+				commit('SET_LOADING', false)
+			} catch (err) {
+				commit('SET_ERROR', err.response.data)
+				commit('SET_LOADING', false)
+				throw err
 			}
-			const createPost = await PostsService.addNewPost(newPost)
-			commit('CREATE_USER_POST', createPost.data)
-			commit('CREATE_POST', createPost.data)
+			
 		},
 		async deletePost ({commit}, payload) {
-			await PostsService.deletePost(payload)
-			commit('DELETE_USER_POST', payload)
-      commit('DELETE_POST', payload)
+			commit('CLEAR_ERROR')
+			commit('SET_LOADING', true)
+
+			try {
+				await PostsService.deletePost(payload)
+				commit('DELETE_USER_POST', payload)
+				commit('DELETE_POST', payload)
+				commit('SET_LOADING', false)
+			} catch (err) {
+				commit('SET_ERROR', err)
+				commit('SET_LOADING', false)
+				throw err
+			}
+			
 		},
 		async updatePost ({commit}, payload) {
-			await PostsService.updatePost(payload)
-			commit('UPDATE_USER_POST', payload)
-			commit('UPDATE_POST', payload)
+			commit('CLEAR_ERROR')
+			commit('SET_LOADING', true)
+			try {
+				await PostsService.updatePost(payload)
+				commit('UPDATE_USER_POST', payload)
+				commit('UPDATE_POST', payload)
+				commit('SET_LOADING', false)
+			} catch (err) {
+				commit('SET_ERROR', err)
+				commit('SET_LOADING', false)
+				throw err
+			}
+			
 		}
 	},
 	getters: {

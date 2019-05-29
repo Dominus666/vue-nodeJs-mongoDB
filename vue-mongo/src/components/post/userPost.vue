@@ -1,9 +1,9 @@
 <template>
   <div>
-    <v-layout row wrap >
+    <v-layout row wrap v-if="userPosts.length === 0">Please create your post</v-layout>
+    <v-layout row wrap v-else>
       <v-flex xs12 sm6 md4 lg3 padding-custom v-for="(post, i) in userPosts" :key="i">
         <v-card class="card-custom">
-
           <v-card-title primary-title>
             <div>
               <h3 class="headline mb-0">{{ post.title }}</h3>

@@ -38,29 +38,44 @@ export default {
 	},
 	actions: {
 		async registrationUser({commit}, payload){
-			commit('setLoading', false)
-			const newUser = {
-				email: payload.email,
-				password: payload.password,
+			commit('CLEAR_ERROR')
+			commit('SET_LOADING', false)
+			try {
+				const newUser = {
+					email: payload.email,
+					password: payload.password,
+				}
+				const createUser = await UserService.addNewUser(newUser)
+				const createdUser = {
+					_id: createUser.data._id,
+					email: createUser.data.email
+				}
+				commit('REGISTRATION_USER', createdUser);
+				commit('SET_LOADING', true)
+			} catch (err) {
+				commit('SET_LOADING', false)
+				commit('SET_ERROR', err.response.data)
+				throw err
 			}
-			const createUser = await UserService.addNewUser(newUser)
-			const createdUser = {
-				_id: createUser.data._id,
-				email: createUser.data.email
-			}
-			commit('REGISTRATION_USER', createdUser);
-			commit('setLoading', true)
+			
 		},
 		async loginUser({commit}, payload) {
-			commit('setLoading', true)
-			const loginUser = await UserService.loginUser(payload)
-			const user = {
-				_id: loginUser.data.user._id,
-				email: loginUser.data.user.email
-			}
-			commit('LOGIN_USER', user)
-			commit('USER_POSTS', loginUser.data.userPosts)
-			commit('setLoading', false)
+			commit('CLEAR_ERROR')
+			commit('SET_LOADING', true)
+			try {
+				const loginUser = await UserService.loginUser(payload)
+				const user = {
+					_id: loginUser.data.user._id,
+					email: loginUser.data.user.email
+				}
+				commit('LOGIN_USER', user)
+				commit('USER_POSTS', loginUser.data.userPosts)
+				commit('SET_LOADING', false)
+				} catch (err) {
+					commit('SET_LOADING', false)
+					commit('SET_ERROR', err.response.data)
+					throw err
+				}
 		},
 		logOut({commit}, payload) {
 			commit('USER_LOG_OUT', payload)

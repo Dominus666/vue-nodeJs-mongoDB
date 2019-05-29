@@ -10,7 +10,7 @@ router.post('/posts', (req, res) => {
   })
   post.save((err, data) => {
     if (err) {
-      console.log(err)
+      res.status(400).send('Post exists.');
     } else {
       res.send(data)
     }

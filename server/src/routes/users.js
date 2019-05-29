@@ -10,7 +10,7 @@ router.post('/users', (req, res) => {
   })
   user.save((err, data) => {
     if (err) {
-      console.log(err)
+      res.status(400).send('User exists.');
     } else {
       res.send(data)
     }
@@ -29,9 +29,8 @@ router.post('/users/login', (req, res) => {
         }
         res.send(userInfo)
       })
-      
     }else {
-      res.status(400).send('no correct password')
+      res.status(400).send('Do not correct password.')
     }
   })
 })
